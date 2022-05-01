@@ -3,6 +3,8 @@ package helios.service
 import helios.MathUtils.Companion.isMultipleOf
 import helios.dto.FizzBuzzRequest
 import helios.dto.FizzBuzzStatisticsResponse
+import helios.model.FizzBuzz
+import helios.model.FizzBuzzId
 import helios.repository.FizzBuzzRepository
 import org.springframework.stereotype.Service
 
@@ -13,6 +15,7 @@ class FizzBuzzService(val fizzBuzzRepository: FizzBuzzRepository) {
         for (number in 1..fizzBuzzRequest.limit) {
             result.add(buildResponse(number, fizzBuzzRequest))
         }
+        saveFizzBuzzRequest(fizzBuzzRequest)
         return result
     }
 
@@ -23,6 +26,33 @@ class FizzBuzzService(val fizzBuzzRepository: FizzBuzzRepository) {
         if (isMultipleOf(fizzBuzzRequest.secondMultiple, number))
             response.append(fizzBuzzRequest.secondMultipleResponse)
         return response.toString().ifEmpty { number.toString() }
+    }
+
+    fun buildFizzBuzz(fizzBuzzRequest: FizzBuzzRequest, count: Int): FizzBuzz {
+        return FizzBuzz(
+            FizzBuzzId(
+                fizzBuzzRequest.firstMultiple,
+                fizzBuzzRequest.secondMultiple,
+                fizzBuzzRequest.limit,
+                fizzBuzzRequest.firstMultipleResponse,
+                fizzBuzzRequest.secondMultipleResponse
+            ), count
+        )
+    }
+
+    fun saveFizzBuzzRequest(fizzBuzzRequest: FizzBuzzRequest) {
+        val fizzBuzzRequestFound = fizzBuzzRepository.findByRequestsField(
+            fizzBuzzRequest.firstMultiple,
+            fizzBuzzRequest.secondMultiple,
+            fizzBuzzRequest.limit,
+            fizzBuzzRequest.firstMultipleResponse,
+            fizzBuzzRequest.secondMultipleResponse
+        )
+        if (fizzBuzzRequestFound == null) {
+            fizzBuzzRepository.save(buildFizzBuzz(fizzBuzzRequest, 1))
+        } else {
+            fizzBuzzRepository.save(buildFizzBuzz(fizzBuzzRequest, fizzBuzzRequestFound.count + 1))
+        }
     }
 
     fun fizzBuzzStatistics(): FizzBuzzStatisticsResponse {
