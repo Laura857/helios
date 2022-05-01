@@ -1,5 +1,6 @@
 package helios.controller
 
+import helios.dto.FizzBuzzRequest
 import helios.service.FizzBuzzService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,6 +17,7 @@ class FizzBuzzController {
                  @RequestParam("int2") int2: Int,
                  @RequestParam("limit") limit: Int,
                  @RequestParam("str1") str1: String,
-                 @RequestParam("str2") str2: String) = fizzBuzService.fizzBuzz(int1, int2, limit, str1, str2)
+                 @RequestParam("str2") str2: String) =
+            fizzBuzService.fizzBuzz(FizzBuzzRequest(int1, int2, limit, str1, str2))
 
 }
