@@ -7,9 +7,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        auto-create: true
-        order_inserts: true
-        order_updates: true
+        ddl-auto: update
         show_sql: true
         properties.hibernate.temp.use_jdbc_metadata_defaults: false
         jdbc:
