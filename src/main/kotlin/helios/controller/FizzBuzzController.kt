@@ -13,11 +13,15 @@ class FizzBuzzController {
     lateinit var fizzBuzService: FizzBuzzService
 
     @GetMapping("api/v1/fizzBuzz")
-    fun fizzBuzz(@RequestParam("int1") int1: Int,
-                 @RequestParam("int2") int2: Int,
-                 @RequestParam("limit") limit: Int,
-                 @RequestParam("str1") str1: String,
-                 @RequestParam("str2") str2: String) =
-            fizzBuzService.fizzBuzz(FizzBuzzRequest(int1, int2, limit, str1, str2))
+    fun fizzBuzz(
+        @RequestParam("int1") int1: Int,
+        @RequestParam("int2") int2: Int,
+        @RequestParam("limit") limit: Int,
+        @RequestParam("str1") str1: String,
+        @RequestParam("str2") str2: String
+    ) =
+        fizzBuzService.fizzBuzz(FizzBuzzRequest(int1, int2, limit, str1, str2))
 
+    @GetMapping("api/v1/fizzBuzz/statistics")
+    fun fizzBuzzStatistics() = fizzBuzService.fizzBuzzStatistics()
 }
