@@ -6,11 +6,14 @@ import helios.model.FizzBuzz
 import helios.model.FizzBuzzId
 import helios.repository.FizzBuzzRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+
 
 @SpringBootTest
 class FizzBuzzServiceTest {
@@ -22,6 +25,8 @@ class FizzBuzzServiceTest {
         const val NUMBER_3 = 3
         const val NUMBER_5 = 5
         const val NUMBER_4 = 4
+        const val COUNT_1 = 1
+        const val COUNT_2 = 2
     }
 
     @Autowired
@@ -110,6 +115,96 @@ class FizzBuzzServiceTest {
                     NUMBER_15
                 )
             )
+    }
+
+    @Test
+    fun `buildFizzBuzz should return Fizzbuzz object with count equal to count in input`() {
+        val fizzBuzzRequest = FizzBuzzRequest(
+            NUMBER_5,
+            NUMBER_3,
+            LIMIT,
+            FIRST_MULTIPLE_RESPONSE,
+            SECOND_MULTIPLE_RESPONSE
+        )
+        val fizzBuzz = FizzBuzz(
+            FizzBuzzId(
+                NUMBER_5,
+                NUMBER_3,
+                LIMIT,
+                FIRST_MULTIPLE_RESPONSE,
+                SECOND_MULTIPLE_RESPONSE,
+            ), NUMBER_15
+        )
+        assertThat(fizzBuzService.buildFizzBuzz(fizzBuzzRequest, NUMBER_15))
+            .isEqualTo(fizzBuzz)
+    }
+
+    @Test
+    fun `saveFizzBuzzRequest should save fizz buzz with count equal to 1 when no fizz buzz exist with request value`() {
+        val fizzBuzzRequest = FizzBuzzRequest(
+            NUMBER_5,
+            NUMBER_3,
+            LIMIT,
+            FIRST_MULTIPLE_RESPONSE,
+            SECOND_MULTIPLE_RESPONSE
+        )
+        val fizzBuzz = FizzBuzz(
+            FizzBuzzId(
+                NUMBER_5,
+                NUMBER_3,
+                LIMIT,
+                FIRST_MULTIPLE_RESPONSE,
+                SECOND_MULTIPLE_RESPONSE,
+            ), COUNT_1
+        )
+        assertDoesNotThrow { fizzBuzService.saveFizzBuzzRequest(fizzBuzzRequest) }
+
+        verify(fizzBuzzRepository).save(fizzBuzz)
+    }
+
+    @Test
+    fun `saveFizzBuzzRequest should save fizz buzz with count equal to 2 when fizz buzz already exist with count equal to 1`() {
+        val fizzBuzzRequest = FizzBuzzRequest(
+            NUMBER_5,
+            NUMBER_3,
+            LIMIT,
+            FIRST_MULTIPLE_RESPONSE,
+            SECOND_MULTIPLE_RESPONSE
+        )
+        val fizzBuzzSaved = FizzBuzz(
+            FizzBuzzId(
+                NUMBER_5,
+                NUMBER_3,
+                LIMIT,
+                FIRST_MULTIPLE_RESPONSE,
+                SECOND_MULTIPLE_RESPONSE,
+            ), COUNT_1
+        )
+
+        val fizzBuzzUpdate = FizzBuzz(
+            FizzBuzzId(
+                NUMBER_5,
+                NUMBER_3,
+                LIMIT,
+                FIRST_MULTIPLE_RESPONSE,
+                SECOND_MULTIPLE_RESPONSE,
+            ), COUNT_2
+        )
+
+        `when`(
+            fizzBuzzRepository.findByRequestsField(
+                fizzBuzzRequest.firstMultiple,
+                fizzBuzzRequest.secondMultiple,
+                fizzBuzzRequest.limit,
+                fizzBuzzRequest.firstMultipleResponse,
+                fizzBuzzRequest.secondMultipleResponse
+            )
+        )
+            .thenReturn(fizzBuzzSaved)
+
+        assertDoesNotThrow { fizzBuzService.saveFizzBuzzRequest(fizzBuzzRequest) }
+
+        verify(fizzBuzzRepository).save(fizzBuzzUpdate)
     }
 }
 
