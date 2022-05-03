@@ -9,7 +9,7 @@ Ce test comporte deux exercices :
 
 ## Fizz Buzz
 #### Fizz Buzz exercice 1
-Pour les nombres *i* allant de 1 à *limit*, ce web service retourne une liste de string contenant :
+Pour *i* allant de 1 à *limit*, ce web service retourne une liste de string contenant :
 - *i* si celui si n'est ni multiple de *int1*, ni de *int2*
 - *str1* si *i* est uniquement multiple de *int1*
 - *str2* si *i* est uniquement multiple de *int2*
@@ -24,6 +24,10 @@ curl --location --request GET 'localhost:8080/api/v1/fizzBuzz/statistics'
 ```
 
 ## Xspeeedlt
+Permet d'optimiser le nombre de cartons pour y mettre le plus d'articles possible
+```
+curl --location --request GET 'localhost:8080/api/v1/itemsPerBox/16384168952773'
+```
 
 ## Lancer l'application local
 
@@ -40,6 +44,9 @@ Choisri le SDK : Java 12
 Choisir active profiles : local
 Via votre IDE lancer le projet, il démarrera sur le port localhost:8080
 ```
+
+## Documentation Api :
+- [Helios local](http://localhost:8080/swagger-ui/index.html)
 
 
 ## Environnements :
